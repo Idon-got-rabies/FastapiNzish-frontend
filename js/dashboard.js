@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-        window.location.href = "../html/login.html";
+        window.location.href = "../login.html";
         return;
     }
 
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("create-item-section").style.display = "block";
         document.getElementById("view-item-sold-section").style.display = "block";
         document.getElementById("inventory-dash-button").addEventListener("click", (event) => {
-            window.location.href = "../html/inventory.html";
+            window.location.href = "../inventory.html";
         })
 
     }
@@ -19,10 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("logout-btn").addEventListener("click", () => {
         localStorage.clear();
-        window.location.href = "../html/login.html";
+        window.location.href = "../login.html";
     });
     document.getElementById("Dashboard-dash-button").addEventListener("click", (event) => {
-       window.location.href = "../html/dashboard.html";
+       window.location.href = "../dashboard.html";
     });
 
     const form = document.getElementById("sale-form");

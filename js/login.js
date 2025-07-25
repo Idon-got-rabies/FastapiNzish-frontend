@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             localStorage.setItem("token", data.access_token);
             localStorage.setItem("is_admin", isAdmin);
-            window.location.href = "../html/dashboard.html";
+            window.location.href = "../dashboard.html";
         } catch (err) {
             document.getElementById("error-message").textContent = err.message;
         }

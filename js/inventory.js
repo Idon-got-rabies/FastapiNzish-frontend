@@ -2,11 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
     const isAdmin = localStorage.getItem("is_admin") === "true";
   if (!token) {
-    window.location.href = "../html/login.html";
+    window.location.href = "../login.html";
     return;
   }
   if (!isAdmin) {
-     window.location.href = "../html/login.html";
+     window.location.href = "../login.html";
         return;
   }
 
