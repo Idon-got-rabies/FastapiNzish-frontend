@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System Dashboard</title>
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/128/17230/17230528.png">
+    <script src="../js/config.js" defer></script>
+    <script src="../js/dashboard.js" defer></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <a href="dashboard.html">
+            <h1><img src="https://cdn-icons-png.flaticon.com/128/17230/17230528.png" alt="logo" width="60">Inventory Management System</h1>
+            </a>
+            <button id="logout-btn">Logout</button>
+        </header>
+        <main>
+            <button id="Dashboard-dash-button">Dashboard</button>
+            <button id="inventory-dash-button">Inventory</button>
+            <button id="sales-dash-button">Sales</button>
+            <section id="inventory-section">
+                <section id="search-section">
+                <h2>Search Inventory</h2>
+                <input type="text" id="search-query" placeholder="Search by ID">
+                <button id="search-btn">Search</button>
+                <div id="inventory-results" class="result-box"></div>
+                </section>
+            </section>
+
+            <section id="sales-section">
+                <h2>Make a Sale</h2>
+                <form id="sale-form">
+                    <input type="text" id="sale-item-id" placeholder="Item ID" required>
+                    <input type="number" id="sale-quantity" placeholder="Quantity" required>
+                    <button type="submit">Submit Sale</button>
+                </form>
+            </section>
+
+            <section id="create-item-section" style="display: none;">
+
+                <h2>Add New Items to Inventory</h2>
+                <form id="create-item-form">
+                    <input type="text" id="new-name" placeholder="Item Name" required>
+                    <input type="number" id="new-quantity" placeholder="Quantity" required>
+                    <input type="number" id="new-price" placeholder="Price" required>
+                    <button type="submit">Add Item</button>
+                </form>
+            </section>
+
+            <section id="view-item-sold-section" style="display: none;">
+                <h2>View Sales</h2>
+                <div class="sales-filters">
+                    <button onclick="showSales('day');">Today</button>
+                    <button onclick="showSales('week')">This Week</button>
+                    <button onclick="showSales('month')">This Month</button>
+                    <button onclick="showSales('year')">This Year</button>
+                </div>
+
+                <div class="sales-display-area">
+                    <div id="sales-day" class="sales-subsection hidden">
+                        <h3>Today's sales</h3><div id="day-total-sales" class="result-box">Today's Results</div>
+                        <div class="table-wrapper">
+                        <table class="sales-table">
+                            <thead>
+                            <tr>
+                                <th>Item ID</th>
+                                <th>Name</th>
+                                <th>Quantity Sold</th>
+                                <th>Total Sales</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales-day-body"></tbody>
+                        </table>
+                        </div>
+                    </div>
+                    <div id="sales-week" class="sales-subsection hidden">
+                        <h3>This Week's sales</h3><div id="week-total-sales" class="result-box">This Week's Results</div>
+                        <div class="table-wrapper">
+                        <table class="sales-table">
+                            <thead>
+                            <tr>
+                                <th>Item ID</th>
+                                <th>Name</th>
+                                <th>Quantity Sold</th>
+                                <th>Total Sales</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales-week-body"></tbody>
+                        </table>
+                        </div>
+                    </div>
+
+
+
+                    <div id="sales-month" class="sales-subsection hidden">
+                        <h3>This Month's sales</h3><div id="month-total-sales" class="result-box">This Month's Results</div>
+                        <div class="table-wrapper">
+                        <table class="sales-table">
+                            <thead>
+                            <tr>
+                                <th>Item ID</th>
+                                <th>Name</th>
+                                <th>Quantity Sold</th>
+                                <th>Total Sales</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales-month-body"></tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <div id="sales-year" class="sales-subsection hidden">
+                                                <h3>This Year's sales</h3><div id="year-total-sales" class="result-box">This Year's Results</div>
+                        <div class="table-wrapper">
+                        <table class="sales-table">
+                            <thead>
+                            <tr>
+                                <th>Item ID</th>
+                                <th>Name</th>
+                                <th>Quantity Sold</th>
+                                <th>Total Sales</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sales-year-body"></tbody>
+                        </table>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </section>
+        </main>
+    </div>
+</body>
+</html>

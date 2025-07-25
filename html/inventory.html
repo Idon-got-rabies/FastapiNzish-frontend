@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventory</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/128/17230/17230528.png">
+  <link rel="stylesheet" href="../assets/css/inventory.css"/>
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-container">
+    <a href="dashboard.html" class="navbar-logo">
+      <img src="https://cdn-icons-png.flaticon.com/128/17230/17230528.png" alt="inventory logo" width="27px" />
+      IMS
+    </a>
+    <ul class="navbar-links">
+      <li><a href="inventory.html" class="nav-link">Inventory</a></li>
+      <li><a href="sales.html" class="nav-link">Sales</a></li>
+      <li><a href="reports.html" class="nav-link">Reports</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+
+  <div class="inventory-container">
+    <header>
+
+    </header>
+
+    <main>
+  <!-- Button to fetch no-sales items -->
+  <button id="fetch-no-sales">Show Items Low Stock</button>
+
+
+
+
+     <section id="nosales-section" style="display: none; margin-top: 20px; border-radius: 10px; padding: 20px;   background: #0d0d0d;">
+    <h2>Items With Low Stock</h2>
+    <div class="table-wrapper">
+
+      <table id="nosales-table">
+        <thead>
+          <tr>
+            <th>Item ID</th>
+            <th>Name</th>
+            <th>Quantity</th>
+
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+   </section>
+
+
+
+
+        <div class="spaced-div"></div>
+
+    <section class="update-form">
+
+      <div class="form_container"><h2>Update Item</h2>
+  <form id="update-form">
+    <label>
+      Item ID:
+      <input type="text" id="update-item-id" required />
+    </label>
+
+    <label>
+      Field to Update:
+      <select id="update-field" required>
+        <option value="">--Select Field--</option>
+        <option value="item_name">Name</option>
+        <option value="item_quantity">Quantity</option>
+        <option value="item_price">Price</option>
+      </select>
+    </label>
+
+    <label>
+      New Value:
+      <input type="text" id="update-new-value" required />
+    </label>
+
+    <button type="submit">Update Item</button>
+  </form>
+      </div>
+</section>
+
+      <div class="spaced-div"></div>
+
+      <section id="inventory-section">
+        <div class="form_container">
+            <h2>Inventory Table</h2>
+        <div class="table-wrapper">
+        <table id="inventory-table">
+          <thead>
+            <tr>
+              <th>Item ID</th>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Items will be populated here -->
+          </tbody>
+        </table>
+        </div>
+
+        <div id="pagination-controls">
+          <!-- Pagination buttons go here -->
+        </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/inventory.js"></script>
+</body>
+</html>
