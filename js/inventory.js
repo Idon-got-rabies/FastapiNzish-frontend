@@ -133,9 +133,8 @@ async function updateItemField(itemId, field, newValue) {
 
   const payload = {};
   payload[field] = newValue;
-
-
-
+  console.log("Payload:", payload);            // Should show { item_quantity: 10 }
+  console.log("Type of value:", typeof payload[field]); // Should show 'number'
 
   try {
     const res = await fetch(endpoint, {
