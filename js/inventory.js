@@ -134,6 +134,8 @@ async function updateItemField(itemId, field, newValue) {
   const payload = {};
   payload[field] = newValue;
   console.log(JSON.stringify(payload));
+  console.log(typeof payload.item_quantity);
+
 
 
   try {
