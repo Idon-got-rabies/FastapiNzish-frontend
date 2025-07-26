@@ -123,7 +123,7 @@ async function updateItemField(itemId, field, newValue) {
   if (field === "item_name") {
     endpoint = `${BASE_URL}/items/inventory/name/up${itemId}`;
   }else if (field === "item_quantity") {
-    endpoint = `${BASE_URL}/items/inventory/up${itemId}`;
+    endpoint = `${BASE_URL}/items/inventory/quantity/up${itemId}`;
   }else if (field === "item_price") {
     endpoint = `${BASE_URL}/items/inventory/price/up${itemId}`;
   } else {
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       const itemId = document.getElementById("update-quantity-item-id").value.trim();
       const rawValue = document.getElementById("update-quantity-quantity").value.trim();
-      const field = "itemInven_quantity";
+      const field = "item_quantity";
 
       if (!itemId || !rawValue){
         alert("Please fill in all fields");
