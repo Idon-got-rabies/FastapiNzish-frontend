@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       const itemId = document.getElementById("update-quantity-item-id").value.trim();
       const rawValue = document.getElementById("update-quantity-quantity").value.trim();
-      const field = "item_quantity";
+      const field = "itemInven_quantity";
 
       if (!itemId || !rawValue){
         alert("Please fill in all fields");
