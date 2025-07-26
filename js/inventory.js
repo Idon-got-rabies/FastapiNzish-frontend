@@ -122,9 +122,9 @@ async function updateItemField(itemId, field, newValue) {
 
   if (field === "item_name") {
     endpoint = `${BASE_URL}/items/inventory/name/up${itemId}`;
-  } else if (field === "item_quantity") {
-    endpoint = `${BASE_URL}/items/inventory/quantity/up${itemId}`;
-  } else if (field === "item_price") {
+  }else if (field === "item_quantity") {
+    endpoint = `${BASE_URL}/items/inventory/up${itemId}`;
+  }else if (field === "item_price") {
     endpoint = `${BASE_URL}/items/inventory/price/up${itemId}`;
   } else {
     console.error("Invalid field");
@@ -158,6 +158,31 @@ async function updateItemField(itemId, field, newValue) {
     alert(`Failed to update ${field}: ${err.message}`);
   }
 }
+
+document.addEventListener("DOMContentLoaded", (event) => {
+  const updateQuantityForm = document.getElementById("update-quantity-form");
+
+  if (updateQuantityForm) {
+    updateQuantityForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const itemId = document.getElementById("update-quantity-item-id").value.trim();
+      const newValue = document.getElementById("update-quantity-quantity").value.trim();
+      const field = "item_quantity";
+
+      if (!itemId || !newValue){
+        alert("Please fill in all fields");
+        return;
+      }
+
+      await updateItemField(itemId, field, newValue);
+
+      updateQuantityForm.reset();
+
+    });
+  }
+
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   const updateForm = document.getElementById("update-form");

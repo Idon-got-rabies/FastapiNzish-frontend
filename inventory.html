@@ -59,6 +59,28 @@
 
         <div class="spaced-div"></div>
 
+      <section class="update-quantity">
+        <div class="form_container">
+          <form id="update-quantity-form">
+            <label>
+              Item ID:
+              <input type="text" id="update-quantity-item-id" required>
+            </label>
+
+            <label>
+              Quantity:
+              <input type="number" id="update-quantity-quantity" required>
+            </label>
+
+            <button type="submit">Update Quantity</button>
+          </form>
+        </div>
+      </section>
+
+      <div class="spaced-div"></div>
+
+
+
     <section class="update-form">
 
       <div class="form_container"><h2>Update Item</h2>
@@ -73,7 +95,6 @@
       <select id="update-field" required>
         <option value="">--Select Field--</option>
         <option value="item_name">Name</option>
-        <option value="item_quantity">Quantity</option>
         <option value="item_price">Price</option>
       </select>
     </label>
