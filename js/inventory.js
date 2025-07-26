@@ -133,8 +133,7 @@ async function updateItemField(itemId, field, newValue) {
 
   const payload = {};
   payload[field] = newValue;
-  console.log(JSON.stringify(payload));
-  console.log(typeof payload.item_quantity);
+
 
 
 
@@ -172,14 +171,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
       event.preventDefault();
 
       const itemId = document.getElementById("update-quantity-item-id").value.trim();
-      const newValue = document.getElementById("update-quantity-quantity").value.trim();
+      const rawValue = document.getElementById("update-quantity-quantity").value.trim();
       const field = "item_quantity";
 
-      if (!itemId || !newValue){
+      if (!itemId || !rawValue){
         alert("Please fill in all fields");
         return;
       }
 
+      const newValue = parseInt(rawValue, 10);
+
+      if (isNaN(newValue)) {
+        alert("Quantity must be a number.");
+        return;
+      }
       await updateItemField(itemId, field, newValue);
 
       updateQuantityForm.reset();
