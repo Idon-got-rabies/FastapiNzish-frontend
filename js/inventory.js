@@ -188,6 +188,82 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       updateQuantityForm.reset();
 
+
+      const ITEMS_PER_PAGE = 20;
+      const token = localStorage.getItem("token");
+      let currentPage = 1;
+      let allItems = [];
+
+      const tableBody = document.querySelector("#inventory-table tbody");
+      const paginationControls = document.getElementById("pagination-controls");
+
+      function fetchInventory() {
+        fetch(`${BASE_URL}/items/inventory/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then(res => {
+            if (!res.ok) throw new Error("Failed to fetch inventory");
+            return res.json();
+          })
+          .then(data => {
+            allItems = data;
+            renderPage(currentPage);
+            setupPagination();
+          })
+          .catch(error => {
+            console.error("Error loading inventory:", error);
+          });
+      }
+
+      function renderPage(page) {
+        tableBody.innerHTML = "";
+        const start = (page - 1) * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        const items = allItems.slice(start, end);
+
+        items.forEach(item => {
+          const row = document.createElement("tr");
+          if (item.item_quantity < 10) {
+            row.classList.add("low-stock");
+          }
+
+          row.innerHTML = `
+            <td>${item.item_id}</td>
+            <td>${item.item_name}</td>
+            <td>${item.item_quantity}</td>
+            <td>${item.item_price}</td>
+          `;
+
+          tableBody.appendChild(row);
+        });
+      }
+
+      function setupPagination() {
+        const totalPages = Math.ceil(allItems.length / ITEMS_PER_PAGE);
+        paginationControls.innerHTML = "";
+
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.classList.add("page-btn");
+          if (i === currentPage) btn.classList.add("active");
+
+          btn.addEventListener("click", () => {
+            currentPage = i;
+            renderPage(i);
+            setupPagination();
+          });
+
+          paginationControls.appendChild(btn);
+        }
+      }
+
+      fetchInventory();
+
+
+
     });
   }
 
