@@ -133,6 +133,8 @@ async function updateItemField(itemId, field, newValue) {
 
   const payload = {};
   payload[field] = newValue;
+  console.log(JSON.stringify(payload));
+
 
   try {
     const res = await fetch(endpoint, {
@@ -142,6 +144,7 @@ async function updateItemField(itemId, field, newValue) {
         Authorization: `Bearer ${token}`
       },
       body: JSON.stringify(payload)
+
     });
 
     if (!res.ok) {
