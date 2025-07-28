@@ -44,7 +44,7 @@ document.getElementById('export-nonsales-btn').addEventListener('click', () => {
 
 async function fetchData(endpoint, date, period) {
   try {
-    const res = await fetch(`${BASE_ENDPOINT}/${endpoint}?range=${date}&period=${period}`, {
+    const res = await fetch(`${BASE_ENDPOINT}/${endpoint}?range=${date}&date_value=${period}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     return await res.json();
