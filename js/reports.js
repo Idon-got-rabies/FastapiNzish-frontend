@@ -1,17 +1,18 @@
 function formatDateToPeriodStart(date, period) {
-  const d = new Date(date);
+  const { DateTime } = luxon;
+  let dt = DateTime.fromISO(date, { zone: 'Africa/Nairobi' });
+
   if (period === 'week') {
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust for Monday start
-    d.setDate(diff);
+    dt = dt.startOf('week'); // Luxon week starts on Monday by default
   } else if (period === 'month') {
-    d.setDate(1);
+    dt = dt.startOf('month');
   } else if (period === 'year') {
-    d.setMonth(0);
-    d.setDate(1);
+    dt = dt.startOf('year');
   }
-  return d.toISOString().split('T')[0];
+
+  return dt.toFormat('yyyy-MM-dd');
 }
+
 
 async function fetchData(endpoint, date, period) {
   const token = localStorage.getItem('token');
