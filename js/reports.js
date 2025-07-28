@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!rawDate) return;
 
     const date = adjustDate(period, rawDate);
-    const url = `${BASE_URL}/items/sale/stats/total/?range=${period}&date_value=${date}`;
+    const url = `${BASE_URL}/items/sale/stats/?range=${period}&date_value=${date}`;
     await fetchAndDisplay(url, "sales-table", "sales-section");
   });
 
