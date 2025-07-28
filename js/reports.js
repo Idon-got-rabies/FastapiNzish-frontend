@@ -11,53 +11,51 @@ document.addEventListener("DOMContentLoaded", async () => {
     return dateStr;
   }
 
-  async function fetchAndDisplay(endpoint, tableId, sectionId) {
-    const token = localStorage.getItem("token");
-    if (!token) return alert("Not authenticated");
-
-    try {
-      const res = await fetch(endpoint, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) {
-        throw new Error(`Failed to fetch: ${res.status}`);
-      }
-
-      const data = await res.json();
-
-      if (!Array.isArray(data)) {
-      console.error("Expected array, got:", data);
-      throw new Error("Invalid data format from API.");
+async function fetchAndDisplay(url, tableId) {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${url}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
     }
-      const table = document.getElementById(tableId).querySelector("tbody");
-      const section = document.getElementById(sectionId);
+  });
 
-      table.innerHTML = "";
-
-      if (data.items.length === 0) {
-        section.style.display = "none";
-        return;
-      }
-
-      data.items.forEach(item => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          
-          <td>${item.item_inventory_id}</td>
-          <td>${item.item_name}</td>
-          <td>${item.total_quantity_sold}</td>
-          <td>${item.total_price}</td>
-        `;
-        table.appendChild(row);
-      });
-
-      section.style.display = "block";
-    } catch (err) {
-      console.error("Error:", err);
-      alert("Failed to load data.");
-    }
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
   }
+
+  const data = await response.json();
+
+  // ✅ Check if response is wrapped in `items`
+  const items = Array.isArray(data) ? data : data.items;
+
+  if (!Array.isArray(items)) {
+    throw new Error("Invalid data format from API.");
+  }
+
+  const tableBody = document.querySelector(`#${tableId} tbody`);
+  tableBody.innerHTML = "";
+
+  if (items.length === 0) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 5;
+    cell.textContent = "No results found.";
+    row.appendChild(cell);
+    tableBody.appendChild(row);
+    return;
+  }
+
+  for (const item of items) {
+    const row = document.createElement("tr");
+    Object.values(item).forEach(val => {
+      const cell = document.createElement("td");
+      cell.textContent = val;
+      row.appendChild(cell);
+    });
+    tableBody.appendChild(row);
+  }
+}
+
 
   salesForm.addEventListener("submit", async e => {
     e.preventDefault();
