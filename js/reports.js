@@ -1,73 +1,79 @@
 // reports.js
-const { DateTime } = luxon;
 
-document.getElementById("report-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("filter-form");
+  if (!form) return;
 
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const periodSelect = document.getElementById("period");
+    const dateInput = document.getElementById("date");
+
+    if (!periodSelect || !dateInput) {
+      console.error("Missing form inputs.");
+      return;
+    }
+
+    const period = periodSelect.value;
+    const date = dateInput.value;
+
+    if (!date) {
+      alert("Please select a date.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Missing token.");
+      return;
+    }
+
+    await fetchData("sales", date, period, "sales-table");
+    await fetchData("total", date, period, "total-table");
+  });
+});
+
+async function fetchData(type, date, period, tableId) {
   const token = localStorage.getItem("token");
-  if (!token) return alert("Not authenticated");
-
-  const period = document.getElementById("period").value;
-  const inputDate = document.getElementById("date").value;
-  if (!inputDate) return alert("Please select a valid date");
-
-  const date = DateTime.fromISO(inputDate);
-  let queryDate;
-
-  switch (period) {
-    case "day":
-      queryDate = date.toISODate();
-      break;
-    case "week":
-      queryDate = date.startOf("week").toISODate();
-      break;
-    case "month":
-      queryDate = date.startOf("month").toISODate();
-      break;
-    case "year":
-      queryDate = date.startOf("year").toISODate();
-      break;
-  }
-
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+  const url = `${BASE_URL}/items/sale/${type}/${period}?date=${date}`;
 
   try {
-    const totalRes = await fetch(`${BASE_URL}/items/sale/total?range=${period}&date_value=${queryDate}`, {
-      headers,
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    const totalData = await totalRes.json();
 
-    const totalTable = document.querySelector("#totals-table tbody");
-    totalTable.innerHTML = "";
-    for (const [key, value] of Object.entries(totalData)) {
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${key}</td><td>${value}</td>`;
-      totalTable.appendChild(row);
-    }
+    if (!response.ok) throw new Error("Fetch failed");
 
-    const nosalesRes = await fetch(`${BASE_URL}/items/sale/none?range=${period}&date_value=${queryDate}`, {
-      headers,
-    });
-    const nosalesData = await nosalesRes.json();
-
-    const nosalesSection = document.getElementById("nosales-section");
-    const nosalesTable = document.querySelector("#nosales-table tbody");
-    nosalesTable.innerHTML = "";
-
-    if (nosalesData.length === 0) {
-      nosalesSection.style.display = "none";
-    } else {
-      nosalesSection.style.display = "block";
-      nosalesData.forEach((item) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${item.id}</td><td>${item.name}</td><td>${item.quantity}</td>`;
-        nosalesTable.appendChild(row);
-      });
-    }
-  } catch (err) {
-    console.error("Failed to fetch report data:", err);
-    alert("An error occurred while fetching data.");
+    const data = await response.json();
+    populateTable(data, tableId);
+  } catch (error) {
+    console.error(`Error fetching ${type} data:`, error);
   }
-});
+}
+
+function populateTable(data, tableId) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+
+  const tbody = table.querySelector("tbody");
+  tbody.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    const row = tbody.insertRow();
+    const cell = row.insertCell();
+    cell.colSpan = 10;
+    cell.textContent = "No data found.";
+    return;
+  }
+
+  data.forEach((item) => {
+    const row = tbody.insertRow();
+    Object.values(item).forEach((value) => {
+      const cell = row.insertCell();
+      cell.textContent = value;
+    });
+  });
+}
