@@ -7,21 +7,18 @@
   <title>Reports</title>
   <link rel="stylesheet" href="/assets/css/reports.css" />
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-
 </head>
 
 <body>
   <nav class="navbar">
     <div class="nav-container">
-          <a href="dashboard.html" class="navbar-logo">
-      <img src="https://cdn-icons-png.flaticon.com/128/17230/17230528.png" alt="inventory logo" width="27px" />
-      IMS
-    </a>
-    <ul class="navbar-links">
-      <li><a href="inventory.html" class="nav-link">Inventory</a></li>
-
-      <li><a href="reports.html" class="nav-link">Reports</a></li>
-    </ul>
+      <a href="dashboard.html" class="navbar-logo">
+        <img src="https://cdn-icons-png.flaticon.com/128/17230/17230528.png" alt="inventory logo" width="27px" /> IMS
+      </a>
+      <ul class="navbar-links">
+        <li><a href="inventory.html" class="nav-link">Inventory</a></li>
+        <li><a href="reports.html" class="nav-link">Reports</a></li>
+      </ul>
     </div>
   </nav>
   <div class="container">
@@ -41,6 +38,11 @@
       <button type="submit">Get Sales</button>
     </form>
 
+    <div id="sales-export-pagination" class="export-pagination">
+      <button id="export-sales-btn">Export to CSV</button>
+      <div class="pagination-controls" id="sales-pagination"></div>
+    </div>
+
     <h1>Non-Sales Reports</h1>
     <form id="nonsales-form">
       <label for="nonsales-period">Period:</label>
@@ -57,6 +59,11 @@
       <button type="submit">Get Non-Sales</button>
     </form>
 
+    <div id="nonsales-export-pagination" class="export-pagination">
+      <button id="export-nonsales-btn">Export to CSV</button>
+      <div class="pagination-controls" id="nonsales-pagination"></div>
+    </div>
+
     <div class="table-wrapper">
       <table id="results-table">
         <thead>
@@ -66,6 +73,7 @@
       </table>
     </div>
   </div>
+
   <script src="/js/config.js"></script>
   <script src="/js/reports.js"></script>
 </body>

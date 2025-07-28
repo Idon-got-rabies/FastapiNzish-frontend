@@ -1,114 +1,145 @@
-function formatDateToPeriodStart(date, period) {
-  const { DateTime } = luxon;
-  let dt = DateTime.fromISO(date, { zone: 'Africa/Nairobi' });
+document.getElementById('sales-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const period = document.getElementById('sales-period').value;
+  const date = document.getElementById('sales-date').value;
 
-  if (period === 'week') {
-    dt = dt.startOf('week'); // Luxon week starts on Monday by default
-  } else if (period === 'month') {
-    dt = dt.startOf('month');
-  } else if (period === 'year') {
-    dt = dt.startOf('year');
+  const data = await fetchData('sale/stats/total/', date, period);
+  const items = data.items || [];
+
+  if (items.length > 0) {
+    renderTable(Object.keys(items[0]), items);
+  } else {
+    renderTable([], []);
+    alert('No sales data found.');
   }
+});
 
-  return dt.toFormat('yyyy-MM-dd');
-}
+document.getElementById('nosales-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const period = document.getElementById('nosales-period').value;
+  const date = document.getElementById('nosales-date').value;
 
+  const data = await fetchData('sale/stats/nosales/', date, period);
+  const items = data.items || [];
+
+  if (items.length > 0) {
+    renderTable(Object.keys(items[0]), items);
+  } else {
+    renderTable([], []);
+    alert('No non-sales data found.');
+  }
+});
 
 async function fetchData(endpoint, date, period) {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('No token found. Please login again.');
-    return [];
-  }
-
-  if (!date) {
-    alert('Please select a valid date.');
-    return [];
-  }
-
-  const startDate = formatDateToPeriodStart(date, period);
-  const url = `${BASE_URL}/items/${endpoint}?range=${period}&date_value=${startDate}`;
-
+  const token = localStorage.getItem("token");
+  const url = `${BASE_URL}/items/${endpoint}${date}?period=${period}`;
   try {
-    const response = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` },
+    const res = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      alert(`Error: ${response.status} ${response.statusText}\n${errorText}`);
-      return [];
-    }
-
-    return await response.json();
-  } catch (error) {
-    alert('Network error occurred while fetching data.');
-    console.error(error);
-    return [];
+    return await res.json();
+  } catch (err) {
+    console.error('Error fetching data:', err);
+    return { items: [] };
   }
 }
 
 function renderTable(headers, data) {
-  const headerRow = document.getElementById('results-header');
-  const body = document.getElementById('results-body');
-
-  headerRow.innerHTML = '';
-  body.innerHTML = '';
+  const table = document.getElementById('results-table');
+  table.innerHTML = '';
 
   if (headers.length === 0 || data.length === 0) {
-    const tr = document.createElement('tr');
-    const td = document.createElement('td');
-    td.colSpan = 100;
-    td.style.textAlign = 'center';
-    td.textContent = 'No data available for this selection.';
-    tr.appendChild(td);
-    body.appendChild(tr);
+    table.innerHTML = '<tr><td colspan="100%">No data to display.</td></tr>';
     return;
   }
 
-  headers.forEach(header => {
+  const thead = document.createElement('thead');
+  const headRow = document.createElement('tr');
+  headers.forEach(h => {
     const th = document.createElement('th');
-    th.textContent = header;
-    headerRow.appendChild(th);
+    th.textContent = h.replace(/_/g, ' ').toUpperCase();
+    headRow.appendChild(th);
   });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
 
+  const tbody = document.createElement('tbody');
   data.forEach(row => {
     const tr = document.createElement('tr');
-    headers.forEach(header => {
+    headers.forEach(h => {
       const td = document.createElement('td');
-      td.textContent = row[header] ?? '-';
+      td.textContent = row[h];
       tr.appendChild(td);
     });
-    body.appendChild(tr);
+    tbody.appendChild(tr);
   });
+  table.appendChild(tbody);
+
+  currentTableData = data;
+  currentHeaders = headers;
+  currentPage = 1;
+  renderPagination();
 }
 
-async function handleFormSubmit(formId, endpoint) {
-  const period = document.getElementById(`${formId}-period`).value;
-  const date = document.getElementById(`${formId}-date`).value;
-  const submitBtn = document.querySelector(`#${formId}-form button`);
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Loading...';
+document.getElementById('export-btn').addEventListener('click', () => {
+  if (!currentTableData.length) return alert("No data to export.");
+  const csvContent = [currentHeaders.join(',')];
+  currentTableData.forEach(row => {
+    csvContent.push(currentHeaders.map(h => row[h]).join(','));
+  });
 
-  const data = await fetchData(endpoint, date, period);
+  const blob = new Blob([csvContent.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'sales_report.csv';
+  link.click();
+});
 
-  if (data.length > 0) {
-    renderTable(Object.keys(data[0]), data);
-  } else {
-    renderTable([], []);
+// Pagination
+let currentTableData = [];
+let currentHeaders = [];
+let currentPage = 1;
+const rowsPerPage = 10;
+
+function renderPagination() {
+  const paginationContainer = document.getElementById('pagination');
+  paginationContainer.innerHTML = '';
+
+  const totalPages = Math.ceil(currentTableData.length / rowsPerPage);
+  if (totalPages <= 1) return;
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    if (i === currentPage) btn.style.fontWeight = 'bold';
+    btn.addEventListener('click', () => {
+      currentPage = i;
+      renderPage(currentPage);
+      renderPagination();
+    });
+    paginationContainer.appendChild(btn);
   }
-
-  submitBtn.disabled = false;
-  submitBtn.textContent = 'Generate';
 }
 
-// Event listeners for both forms
-document.getElementById('sales-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  await handleFormSubmit('sales', 'sale/stats/total/');
-});
+function renderPage(page) {
+  const table = document.getElementById('results-table');
+  const start = (page - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const slicedData = currentTableData.slice(start, end);
 
-document.getElementById('nonsales-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  await handleFormSubmit('nonsales', 'sale/stats/none/');
-});
+  const tbody = document.createElement('tbody');
+  slicedData.forEach(row => {
+    const tr = document.createElement('tr');
+    currentHeaders.forEach(h => {
+      const td = document.createElement('td');
+      td.textContent = row[h];
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  table.querySelector('tbody')?.remove();
+  table.appendChild(tbody);
+}
