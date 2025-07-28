@@ -28,7 +28,7 @@ document.getElementById("report-form").addEventListener("submit", async function
       break;
   }
 
-  const url = `${BASE_URL}/items/sale/by_period?range=${period}&date_value=${queryDate}`;
+  const url = `${BASE_URL}/items/sale/stats/total/?range=${period}&date_value=${queryDate}`;
 
   try {
     const response = await fetch(url, {
