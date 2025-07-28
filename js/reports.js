@@ -28,7 +28,7 @@ document.getElementById("report-form").addEventListener("submit", async function
       break;
   }
 
-  const url = `${BASE_URL}/items/sale/by_period?period=${period}&date=${queryDate}`;
+  const url = `${BASE_URL}/items/sale/by_period?range=${period}&date_value=${queryDate}`;
 
   try {
     const response = await fetch(url, {
@@ -59,11 +59,11 @@ function populateTable(sales) {
   for (const sale of sales) {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${sale.id}</td>
+      <td>${sale.item_inventory_id}</td>
       <td>${sale.item_name}</td>
-      <td>${sale.quantity}</td>
+      <td>${sale.total_quantity_sold}</td>
       <td>${sale.total_price}</td>
-      <td>${sale.date}</td>
+      <td>${sale.sale_date}</td>
     `;
     tbody.appendChild(row);
   }
