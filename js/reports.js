@@ -1,3 +1,11 @@
+const token = localStorage.getItem("token");
+const BASE_ENDPOINT = `${BASE_URL}/items`;
+
+let salesData = [], nonsalesData = [];
+let salesHeaders = [], nonsalesHeaders = [];
+let currentSalesPage = 1, currentNonSalesPage = 1;
+const rowsPerPage = 10;
+
 document.getElementById('sales-form').addEventListener('submit', async e => {
   e.preventDefault();
   const period = document.getElementById('sales-period').value;
@@ -6,56 +14,58 @@ document.getElementById('sales-form').addEventListener('submit', async e => {
   const data = await fetchData('sale/stats/total/', date, period);
   const items = data.items || [];
 
-  if (items.length > 0) {
-    renderTable(Object.keys(items[0]), items);
-  } else {
-    renderTable([], []);
-    alert('No sales data found.');
-  }
+  salesData = items;
+  salesHeaders = items.length ? Object.keys(items[0]) : [];
+  renderTable(salesHeaders, salesData, 'results-table');
+  renderPagination('sales-pagination', salesData, salesHeaders, 'results-table', 'sales');
 });
 
-document.getElementById('nosales-form').addEventListener('submit', async e => {
+document.getElementById('nonsales-form').addEventListener('submit', async e => {
   e.preventDefault();
-  const period = document.getElementById('nosales-period').value;
-  const date = document.getElementById('nosales-date').value;
+  const period = document.getElementById('nonsales-period').value;
+  const date = document.getElementById('nonsales-date').value;
 
   const data = await fetchData('sale/stats/nosales/', date, period);
   const items = data.items || [];
 
-  if (items.length > 0) {
-    renderTable(Object.keys(items[0]), items);
-  } else {
-    renderTable([], []);
-    alert('No non-sales data found.');
-  }
+  nonsalesData = items;
+  nonsalesHeaders = items.length ? Object.keys(items[0]) : [];
+  renderTable(nonsalesHeaders, nonsalesData, 'results-table');
+  renderPagination('nonsales-pagination', nonsalesData, nonsalesHeaders, 'results-table', 'nonsales');
+});
+
+document.getElementById('export-sales-btn').addEventListener('click', () => {
+  exportToCSV(salesHeaders, salesData, 'sales_report.csv');
+});
+
+document.getElementById('export-nonsales-btn').addEventListener('click', () => {
+  exportToCSV(nonsalesHeaders, nonsalesData, 'nonsales_report.csv');
 });
 
 async function fetchData(endpoint, date, period) {
-  const token = localStorage.getItem("token");
-  const url = `${BASE_URL}/items/${endpoint}${date}?period=${period}`;
   try {
-    const res = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
+    const res = await fetch(`${BASE_ENDPOINT}/${endpoint}${date}?period=${period}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
     });
     return await res.json();
   } catch (err) {
-    console.error('Error fetching data:', err);
+    console.error("Fetch failed:", err);
     return { items: [] };
   }
 }
 
-function renderTable(headers, data) {
-  const table = document.getElementById('results-table');
-  table.innerHTML = '';
+function renderTable(headers, data, tableId) {
+  const table = document.getElementById(tableId);
+  const thead = table.querySelector('thead');
+  const tbody = table.querySelector('tbody');
+  thead.innerHTML = '';
+  tbody.innerHTML = '';
 
-  if (headers.length === 0 || data.length === 0) {
-    table.innerHTML = '<tr><td colspan="100%">No data to display.</td></tr>';
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="100%">No data to display.</td></tr>';
     return;
   }
 
-  const thead = document.createElement('thead');
   const headRow = document.createElement('tr');
   headers.forEach(h => {
     const th = document.createElement('th');
@@ -63,83 +73,56 @@ function renderTable(headers, data) {
     headRow.appendChild(th);
   });
   thead.appendChild(headRow);
-  table.appendChild(thead);
 
-  const tbody = document.createElement('tbody');
-  data.forEach(row => {
-    const tr = document.createElement('tr');
+  const page = tableId.includes('sales') ? currentSalesPage : currentNonSalesPage;
+  const pageData = data.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+
+  pageData.forEach(item => {
+    const row = document.createElement('tr');
     headers.forEach(h => {
       const td = document.createElement('td');
-      td.textContent = row[h];
-      tr.appendChild(td);
+      td.textContent = item[h];
+      row.appendChild(td);
     });
-    tbody.appendChild(tr);
+    tbody.appendChild(row);
   });
-  table.appendChild(tbody);
-
-  currentTableData = data;
-  currentHeaders = headers;
-  currentPage = 1;
-  renderPagination();
 }
 
-document.getElementById('export-btn').addEventListener('click', () => {
-  if (!currentTableData.length) return alert("No data to export.");
-  const csvContent = [currentHeaders.join(',')];
-  currentTableData.forEach(row => {
-    csvContent.push(currentHeaders.map(h => row[h]).join(','));
-  });
+function renderPagination(containerId, data, headers, tableId, type) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
 
-  const blob = new Blob([csvContent.join('\n')], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'sales_report.csv';
-  link.click();
-});
-
-// Pagination
-let currentTableData = [];
-let currentHeaders = [];
-let currentPage = 1;
-const rowsPerPage = 10;
-
-function renderPagination() {
-  const paginationContainer = document.getElementById('pagination');
-  paginationContainer.innerHTML = '';
-
-  const totalPages = Math.ceil(currentTableData.length / rowsPerPage);
+  const totalPages = Math.ceil(data.length / rowsPerPage);
   if (totalPages <= 1) return;
 
   for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement('button');
     btn.textContent = i;
-    if (i === currentPage) btn.style.fontWeight = 'bold';
+    if ((type === 'sales' && i === currentSalesPage) || (type === 'nonsales' && i === currentNonSalesPage)) {
+      btn.classList.add('active');
+    }
+
     btn.addEventListener('click', () => {
-      currentPage = i;
-      renderPage(currentPage);
-      renderPagination();
+      if (type === 'sales') currentSalesPage = i;
+      else currentNonSalesPage = i;
+
+      renderTable(headers, data, tableId);
+      renderPagination(containerId, data, headers, tableId, type);
     });
-    paginationContainer.appendChild(btn);
+    container.appendChild(btn);
   }
 }
 
-function renderPage(page) {
-  const table = document.getElementById('results-table');
-  const start = (page - 1) * rowsPerPage;
-  const end = start + rowsPerPage;
-  const slicedData = currentTableData.slice(start, end);
-
-  const tbody = document.createElement('tbody');
-  slicedData.forEach(row => {
-    const tr = document.createElement('tr');
-    currentHeaders.forEach(h => {
-      const td = document.createElement('td');
-      td.textContent = row[h];
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
+function exportToCSV(headers, data, filename) {
+  if (!headers.length || !data.length) return alert("Nothing to export.");
+  const csvContent = [headers.join(',')];
+  data.forEach(row => {
+    csvContent.push(headers.map(h => row[h]).join(','));
   });
-
-  table.querySelector('tbody')?.remove();
-  table.appendChild(tbody);
+  const blob = new Blob([csvContent.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
 }
+
