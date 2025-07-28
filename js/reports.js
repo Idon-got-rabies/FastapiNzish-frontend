@@ -1,79 +1,87 @@
-// reports.js
-
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("filter-form");
-  if (!form) return;
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    const periodSelect = document.getElementById("period");
-    const dateInput = document.getElementById("date");
+  const salesForm = document.getElementById("sales-form");
+  const nosalesForm = document.getElementById("nosales-form");
 
-    if (!periodSelect || !dateInput) {
-      console.error("Missing form inputs.");
-      return;
-    }
+  function adjustDate(period, dateStr) {
+    const [year, month, day] = dateStr.split("-");
+    if (period === "month") return `${year}-${month}-01`;
+    if (period === "year") return `${year}-01-01`;
+    return dateStr;
+  }
 
-    const period = periodSelect.value;
-    const date = dateInput.value;
-
-    if (!date) {
-      alert("Please select a date.");
-      return;
-    }
-
+  async function fetchAndDisplay(endpoint, tableId, sectionId) {
     const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Missing token.");
-      return;
+    if (!token) return alert("Not authenticated");
+
+    try {
+      const res = await fetch(endpoint, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch: ${res.status}`);
+      }
+
+      const data = await res.json();
+      const table = document.getElementById(tableId).querySelector("tbody");
+      const section = document.getElementById(sectionId);
+
+      table.innerHTML = "";
+
+      if (data.items.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      data.items.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.item_id}</td>
+          <td>${item.item_inventory_id}</td>
+          <td>${item.item_name}</td>
+          <td>${item.total_quantity_sold}</td>
+          <td>${item.total_price}</td>
+        `;
+        table.appendChild(row);
+      });
+
+      section.style.display = "block";
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Failed to load data.");
     }
+  }
 
-    await fetchData("sales", date, period, "sales-table");
-    await fetchData("total", date, period, "total-table");
+  salesForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const period = document.getElementById("sales-period").value;
+    const rawDate = document.getElementById("sales-date").value;
+    if (!rawDate) return;
+
+    const date = adjustDate(period, rawDate);
+    const url = `${BASE_URL}/items/sale/stats/total/?range=${period}&date_value=${date}`;
+    fetchAndDisplay(url, "sales-table", "sales-section");
   });
+
+  nosalesForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const period = document.getElementById("nosales-period").value;
+    const rawDate = document.getElementById("nosales-date").value;
+    if (!rawDate) return;
+
+    const date = adjustDate(period, rawDate);
+    const url = `${BASE_URL}/items/sale/stats/none/?range=${period}&date_value=${date}`;
+    fetchAndDisplay(url, "nosales-table", "nosales-section");
+  });
+
+  // Optional logout
+  const logoutBtn = document.getElementById("logout-btn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    });
+  }
 });
-
-async function fetchData(type, date, period, tableId) {
-  const token = localStorage.getItem("token");
-  const url = `${BASE_URL}/items/sale/${type}/${period}?date=${date}`;
-
-  try {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) throw new Error("Fetch failed");
-
-    const data = await response.json();
-    populateTable(data, tableId);
-  } catch (error) {
-    console.error(`Error fetching ${type} data:`, error);
-  }
-}
-
-function populateTable(data, tableId) {
-  const table = document.getElementById(tableId);
-  if (!table) return;
-
-  const tbody = table.querySelector("tbody");
-  tbody.innerHTML = "";
-
-  if (!data || data.length === 0) {
-    const row = tbody.insertRow();
-    const cell = row.insertCell();
-    cell.colSpan = 10;
-    cell.textContent = "No data found.";
-    return;
-  }
-
-  data.forEach((item) => {
-    const row = tbody.insertRow();
-    Object.values(item).forEach((value) => {
-      const cell = row.insertCell();
-      cell.textContent = value;
-    });
-  });
-}

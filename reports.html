@@ -1,68 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sales Reports</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Reports</title>
   <link rel="stylesheet" href="/assets/css/reports.css" />
-  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
 </head>
-
 <body>
-  <div class="container">
-    <h1>Sales Reports</h1>
+  <nav class="navbar">
+    <ul>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="inventory.html">Inventory</a></li>
+      <li><a href="reports.html" class="active">Reports</a></li>
+      <li><a href="#" id="logout-btn">Logout</a></li>
+    </ul>
+  </nav>
 
-    <form id="report-form">
-      <label for="range">Select Range:</label>
-      <select id="range" name="range">
+  <div class="container">
+    <h1>Admin Sales Reports</h1>
+
+    <form id="sales-form">
+      <label for="sales-period">View Total Sales By:</label>
+      <select id="sales-period">
         <option value="day">Day</option>
-        <option value="week">Week</option>
         <option value="month">Month</option>
         <option value="year">Year</option>
       </select>
-
-      <label for="date_value">Select Date:</label>
-      <input type="date" id="date_value" name="date_value" required />
-
-      <button type="submit">Generate Report</button>
+      <input type="date" id="sales-date" required />
+      <button type="submit">View Sales</button>
     </form>
 
-    <div class="table-wrapper">
-      <table id="sales-table">
-        <thead>
-          <tr>
-            <th>Sale ID</th>
-            <th>Item ID</th>
-            <th>Item Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Total</th>
-            <th>Timestamp</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <form id="nosales-form">
+      <label for="nosales-period">View No Sales By:</label>
+      <select id="nosales-period">
+        <option value="day">Day</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+      </select>
+      <input type="date" id="nosales-date" required />
+      <button type="submit">View No Sales</button>
+    </form>
 
-    <section id="total-section" style="margin-top: 30px;">
-      <h2>Total Sales Summary</h2>
+    <section id="sales-section" style="display: none;">
+      <h2>Total Sales</h2>
       <div class="table-wrapper">
-        <table>
+        <table id="sales-table">
           <thead>
             <tr>
-              <th>Total Sales</th>
-              <th>Total Revenue (Ksh)</th>
+              <th>Item ID</th>
+              <th>Inventory ID</th>
+              <th>Item Name</th>
+              <th>Quantity Sold</th>
+              <th>Total Price</th>
             </tr>
           </thead>
-          <tbody id="total-table"></tbody>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="nosales-section" style="display: none; margin-top: 20px;">
+      <h2>Items With No Sales</h2>
+      <div class="table-wrapper">
+        <table id="nosales-table">
+          <thead>
+            <tr>
+              <th>Item ID</th>
+              <th>Inventory ID</th>
+              <th>Item Name</th>
+              <th>Quantity Sold</th>
+              <th>Total Price</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
         </table>
       </div>
     </section>
   </div>
-
   <script src="/js/config.js"></script>
   <script src="/js/reports.js"></script>
 </body>
-
 </html>
