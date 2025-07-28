@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       data.items.forEach(item => {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${item.item_id}</td>
+          
           <td>${item.item_inventory_id}</td>
           <td>${item.item_name}</td>
           <td>${item.total_quantity_sold}</td>
