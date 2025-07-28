@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
 
   const salesForm = document.getElementById("sales-form");
@@ -25,6 +25,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const data = await res.json();
+
+      if (!Array.isArray(data)) {
+      console.error("Expected array, got:", data);
+      throw new Error("Invalid data format from API.");
+    }
       const table = document.getElementById(tableId).querySelector("tbody");
       const section = document.getElementById(sectionId);
 
@@ -54,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  salesForm.addEventListener("submit", e => {
+  salesForm.addEventListener("submit", async e => {
     e.preventDefault();
     const period = document.getElementById("sales-period").value;
     const rawDate = document.getElementById("sales-date").value;
@@ -62,10 +67,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const date = adjustDate(period, rawDate);
     const url = `${BASE_URL}/items/sale/stats/total/?range=${period}&date_value=${date}`;
-    fetchAndDisplay(url, "sales-table", "sales-section");
+    await fetchAndDisplay(url, "sales-table", "sales-section");
   });
 
-  nosalesForm.addEventListener("submit", e => {
+  nosalesForm.addEventListener("submit", async e => {
     e.preventDefault();
     const period = document.getElementById("nosales-period").value;
     const rawDate = document.getElementById("nosales-date").value;
@@ -73,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const date = adjustDate(period, rawDate);
     const url = `${BASE_URL}/items/sale/stats/none/?range=${period}&date_value=${date}`;
-    fetchAndDisplay(url, "nosales-table", "nosales-section");
+    await fetchAndDisplay(url, "nosales-table", "nosales-section");
   });
 
   // Optional logout
