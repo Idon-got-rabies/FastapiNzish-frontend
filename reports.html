@@ -1,64 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sales Reports</title>
   <link rel="stylesheet" href="/assets/css/reports.css" />
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
 </head>
+
 <body>
   <div class="container">
     <h1>Sales Reports</h1>
 
     <form id="report-form">
-      <label for="period">Select Period:</label>
-      <select id="period" name="period" required>
+      <label for="range">Select Range:</label>
+      <select id="range" name="range">
         <option value="day">Day</option>
         <option value="week">Week</option>
         <option value="month">Month</option>
         <option value="year">Year</option>
       </select>
 
-      <label for="date">Select Date:</label>
-      <input type="date" id="date" name="date" required />
+      <label for="date_value">Select Date:</label>
+      <input type="date" id="date_value" name="date_value" required />
 
       <button type="submit">Generate Report</button>
     </form>
 
-    <section id="totals-section">
+    <div class="table-wrapper">
+      <table id="sales-table">
+        <thead>
+          <tr>
+            <th>Sale ID</th>
+            <th>Item ID</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <section id="total-section" style="margin-top: 30px;">
       <h2>Total Sales Summary</h2>
       <div class="table-wrapper">
-        <table id="totals-table">
+        <table>
           <thead>
             <tr>
-              <th>Metric</th>
-              <th>Value</th>
+              <th>Total Sales</th>
+              <th>Total Revenue (Ksh)</th>
             </tr>
           </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section id="nosales-section" style="display: none; margin-top: 20px;">
-      <h2>Items With No Sales</h2>
-      <div class="table-wrapper">
-        <table id="nosales-table">
-          <thead>
-            <tr>
-              <th>Item ID</th>
-              <th>Name</th>
-              <th>Remaining Quantity</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
+          <tbody id="total-table"></tbody>
         </table>
       </div>
     </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
   <script src="/js/config.js"></script>
   <script src="/js/reports.js"></script>
 </body>
+
 </html>

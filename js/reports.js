@@ -1,76 +1,73 @@
 // reports.js
-const BASE_URL = window.BASE_URL;
-const DateTime = luxon.DateTime;
+const { DateTime } = luxon;
 
-function getStandardDate(dateStr, period) {
-  const date = DateTime.fromISO(dateStr);
-  if (!date.isValid) return null;
-
-  switch (period) {
-    case "week":
-      return date.startOf("week").toISODate();
-    case "month":
-      return date.startOf("month").toISODate();
-    case "year":
-      return date.startOf("year").toISODate();
-    default:
-      return date.toISODate();
-  }
-}
-
-function fetchData(endpoint, tableId, rowMapper, hideSectionIfEmpty = false) {
-  const token = localStorage.getItem("token");
-  if (!token) return;
-
-  fetch(`${BASE_URL}${endpoint}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
-      return res.json();
-    })
-    .then((data) => {
-      const tableBody = document.querySelector(`#${tableId} tbody`);
-      tableBody.innerHTML = "";
-
-      if (data.length === 0 || (Object.keys(data).length === 0 && data.constructor === Object)) {
-        if (hideSectionIfEmpty) {
-          document.getElementById("nosales-section").style.display = "none";
-        }
-        return;
-      }
-
-      if (hideSectionIfEmpty) {
-        document.getElementById("nosales-section").style.display = "block";
-      }
-
-      const rows = Array.isArray(data) ? data.map(rowMapper) : [rowMapper(data)];
-      tableBody.innerHTML = rows.join("");
-    })
-    .catch((error) => console.error(error));
-}
-
-document.getElementById("report-form").addEventListener("submit", (e) => {
+document.getElementById("report-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const dateInput = document.getElementById("date_value").value;
-  const period = document.getElementById("range").value;
-  const standardizedDate = getStandardDate(dateInput, period);
+  const token = localStorage.getItem("token");
+  if (!token) return alert("Not authenticated");
 
-  if (!standardizedDate) return;
+  const period = document.getElementById("period").value;
+  const inputDate = document.getElementById("date").value;
+  if (!inputDate) return alert("Please select a valid date");
 
-  fetchData(
-    `/items/sale/stats/total/?range=${period}&date_value=${standardizedDate}`,
-    "total-sales-table",
-    (item) => `<tr><td>${item.total_quantity}</td><td>KES ${item.total_revenue}</td></tr>`
-  );
+  const date = DateTime.fromISO(inputDate);
+  let queryDate;
 
-  fetchData(
-    `/items/sale/stats/nosales/?range=${period}&date_value=${standardizedDate}`,
-    "nosales-table",
-    (item) => `<tr><td>${item.id}</td><td>${item.name}</td><td>${item.quantity}</td></tr>`,
-    true
-  );
+  switch (period) {
+    case "day":
+      queryDate = date.toISODate();
+      break;
+    case "week":
+      queryDate = date.startOf("week").toISODate();
+      break;
+    case "month":
+      queryDate = date.startOf("month").toISODate();
+      break;
+    case "year":
+      queryDate = date.startOf("year").toISODate();
+      break;
+  }
+
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  try {
+    const totalRes = await fetch(`${BASE_URL}/items/sale/total?range=${period}&date_value=${queryDate}`, {
+      headers,
+    });
+    const totalData = await totalRes.json();
+
+    const totalTable = document.querySelector("#totals-table tbody");
+    totalTable.innerHTML = "";
+    for (const [key, value] of Object.entries(totalData)) {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${key}</td><td>${value}</td>`;
+      totalTable.appendChild(row);
+    }
+
+    const nosalesRes = await fetch(`${BASE_URL}/items/sale/none?range=${period}&date_value=${queryDate}`, {
+      headers,
+    });
+    const nosalesData = await nosalesRes.json();
+
+    const nosalesSection = document.getElementById("nosales-section");
+    const nosalesTable = document.querySelector("#nosales-table tbody");
+    nosalesTable.innerHTML = "";
+
+    if (nosalesData.length === 0) {
+      nosalesSection.style.display = "none";
+    } else {
+      nosalesSection.style.display = "block";
+      nosalesData.forEach((item) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${item.id}</td><td>${item.name}</td><td>${item.quantity}</td>`;
+        nosalesTable.appendChild(row);
+      });
+    }
+  } catch (err) {
+    console.error("Failed to fetch report data:", err);
+    alert("An error occurred while fetching data.");
+  }
 });
