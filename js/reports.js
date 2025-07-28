@@ -6,41 +6,6 @@ let salesHeaders = [], nonsalesHeaders = [];
 let currentSalesPage = 1, currentNonSalesPage = 1;
 const rowsPerPage = 10;
 
-document.getElementById('sales-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const period = document.getElementById('sales-period').value;
-  const date = document.getElementById('sales-date').value;
-
-  const data = await fetchData('sale/stats/total/', date, period);
-  const items = data.items || [];
-
-  salesData = items;
-  salesHeaders = items.length ? Object.keys(items[0]) : [];
-  renderTable(salesHeaders, salesData, 'results-table');
-  renderPagination('sales-pagination', salesData, salesHeaders, 'results-table', 'sales');
-});
-
-document.getElementById('nonsales-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const period = document.getElementById('nonsales-period').value;
-  const date = document.getElementById('nonsales-date').value;
-
-  const data = await fetchData('sale/stats/nosales/', date, period);
-  const items = data.items || [];
-
-  nonsalesData = items;
-  nonsalesHeaders = items.length ? Object.keys(items[0]) : [];
-  renderTable(nonsalesHeaders, nonsalesData, 'results-table');
-  renderPagination('nonsales-pagination', nonsalesData, nonsalesHeaders, 'results-table', 'nonsales');
-});
-
-document.getElementById('export-sales-btn').addEventListener('click', () => {
-  exportToCSV(salesHeaders, salesData, 'sales_report.csv');
-});
-
-document.getElementById('export-nonsales-btn').addEventListener('click', () => {
-  exportToCSV(nonsalesHeaders, nonsalesData, 'nonsales_report.csv');
-});
 
 async function fetchData(endpoint, date, period) {
   try {
@@ -125,4 +90,43 @@ function exportToCSV(headers, data, filename) {
   link.download = filename;
   link.click();
 }
+
+
+
+
+document.getElementById('sales-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const period = document.getElementById('sales-period').value;
+  const date = document.getElementById('sales-date').value;
+
+  const data = await fetchData('sale/stats/total/', date, period);
+  const items = data.items || [];
+
+  salesData = items;
+  salesHeaders = items.length ? Object.keys(items[0]) : [];
+  renderTable(salesHeaders, salesData, 'results-table');
+  renderPagination('sales-pagination', salesData, salesHeaders, 'results-table', 'sales');
+});
+
+document.getElementById('nonsales-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const period = document.getElementById('nonsales-period').value;
+  const date = document.getElementById('nonsales-date').value;
+
+  const data = await fetchData('sale/stats/none/', date, period);
+  const items = data.items || [];
+
+  nonsalesData = items;
+  nonsalesHeaders = items.length ? Object.keys(items[0]) : [];
+  renderTable(nonsalesHeaders, nonsalesData, 'results-table');
+  renderPagination('nonsales-pagination', nonsalesData, nonsalesHeaders, 'results-table', 'nonsales');
+});
+
+document.getElementById('export-sales-btn').addEventListener('click', () => {
+  exportToCSV(salesHeaders, salesData, 'sales_report.csv');
+});
+
+document.getElementById('export-nonsales-btn').addEventListener('click', () => {
+  exportToCSV(nonsalesHeaders, nonsalesData, 'nonsales_report.csv');
+});
 
