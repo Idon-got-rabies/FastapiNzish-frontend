@@ -1,59 +1,98 @@
+/* reports.css — updated to style inventory like the reports page */
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #1a1a1a;
-    color: #f0f0f0;
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #fff;
+  min-height: 100vh;
 }
 
-.inventory-container {
-  padding: 2rem;
-  max-width: 1000px;
-  margin: auto;
+.inventory-container, .container {
+  max-width: 900px;
+  margin: 50px auto;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
-header h1 {
-  text-align: left;
-  margin-bottom: 2rem;
-  color: black;
+header h1, header h2, h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2em;
+  color: #fff;
 }
 
-header h2{
-    text-align: center;
-    margin-bottom: 2rem;
-    color: cornsilk;
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 30px;
 }
 
-#inventory-table {
+label {
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+select,
+input[type="date"],
+button,
+input,
+select {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1em;
+  background-color: #fff;
+  color: #000;
+}
+
+button {
+  background-color: #00b894;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #019875;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #1e1e1e;
+  background-color: rgba(255, 255, 255, 0.05);
   border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-#inventory-table th,
-#inventory-table td {
-  padding: 12px 15px;
-  text-align: left;
-}
-
-#inventory-table thead {
-  background-color: #333;
+thead {
+  background-color: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
 
-#inventory-table tbody tr {
-  border-bottom: 1px solid #2a2a2a;
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-#inventory-table tbody tr:hover {
-  background-color: #2e2e2e;
+tr:hover {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .low-stock {
-  background-color: #4a1c1c !important;
+  background-color: rgba(255, 80, 80, 0.2) !important;
   color: #ff6b6b;
   font-weight: bold;
 }
@@ -81,61 +120,70 @@ header h2{
   background-color: #00bcd4;
   color: #fff;
 }
-/* --- NAVBAR STYLES --- */
+
+@media (max-width: 600px) {
+  form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Navbar Styling */
 .navbar {
-  background-color: #111;
-  padding: 10px 20px;
-  color: white;
-  display: flex;
-  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  padding: 15px 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .navbar-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 100%;
+  justify-content: space-between;
   max-width: 1000px;
-  flex-wrap: wrap;
+  margin: 0 auto;
 }
 
 .navbar-logo {
   display: flex;
   align-items: center;
+  font-size: 1.3em;
   font-weight: bold;
-  font-size: 1.2rem;
+  color: #fff;
   text-decoration: none;
-  color: white;
+  gap: 10px;
 }
 
 .navbar-logo img {
-  margin-right: 8px;
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
+  vertical-align: middle;
 }
 
 .navbar-links {
-  display: flex;
-  gap: 20px;
   list-style: none;
+  display: flex;
+  gap: 25px;
   margin: 0;
   padding: 0;
 }
 
 .navbar-links .nav-link {
+  color: #fff;
   text-decoration: none;
-  color: white;
-  font-size: 1rem;
-  transition: color 0.2s ease-in-out;
+  font-weight: 500;
+  transition: color 0.3s;
 }
 
-.navbar-links .nav-link:hover {
+.navbar-links .nav-link:hover,
+.navbar-links .nav-link:focus {
   color: #00bcd4;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
+/* Responsive Nav */
+@media (max-width: 700px) {
   .navbar-container {
     flex-direction: column;
     align-items: flex-start;
@@ -144,146 +192,10 @@ header h2{
   .navbar-links {
     flex-direction: column;
     width: 100%;
-    gap: 10px;
     margin-top: 10px;
   }
 
   .navbar-links .nav-link {
-    width: 100%;
+    padding: 10px 0;
   }
-}
-
-
-
-a{
-    text-decoration: none;
-}
-a :hover{
-    color: #00bcd4;
-
-}
-button{
-  background-color: #00bcd4;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  margin: 0 5px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-input, button, select {
-    margin: 10px 5px;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-}
-
-
-.table-wrapper {
-    overflow-x: auto;
-    margin-top: 10px;
-}
-
-form {
-  margin-bottom: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-}
-form label {
-  font-weight: bold;
-}
-form input {
-  flex: 1 1 150px;
-}
-
-#inventory-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #1e1e1e;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-#inventory-table th,
-#inventory-table td {
-  padding: 12px 15px;
-  text-align: left;
-}
-
-#inventory-table thead {
-  background-color: #333;
-  color: #fff;
-}
-
-#inventory-table tbody tr {
-  border-bottom: 1px solid #2a2a2a;
-}
-
-#inventory-table tbody tr:hover {
-  background-color: #2e2e2e;
-}
-
-#nosales-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #1e1e1e;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-
-}
-
-#nosales-table thead {
-  background-color: #333;
-  color: #fff;
-  text-align: left;
-}
-
-#nosales-table th,
-#nosales-table td {
-  padding: 12px 16px;
-  border-bottom: 1px solid #343a40;
-}
-
-#nosales-table tbody tr:nth-child(even) {
-    border-bottom: 1px solid #2a2a2a;
-}
-
-#nosales-table tbody tr:nth-child(odd) {
-      border-bottom: 1px solid #2a2a2a;
-}
-
-#nosales-table tbody tr:hover {
-  background-color: #2e2e2e;
-  cursor: pointer;
-}
-
-#nosales-table th:first-child,
-#nosales-table td:first-child {
-  border-left: none;
-}
-
-#nosales-table th:last-child,
-#nosales-table td:last-child {
-  border-right: none;
-}
-
-.form_container{
-      padding: 20px;
-      border: 1px solid #444444;
-      border-radius: 10px;
-      background: #0d0d0d;
-}
-
-
-.spaced-div {
-    margin-top: 20px;
 }
