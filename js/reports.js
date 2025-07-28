@@ -20,7 +20,7 @@ async function fetchData(endpoint, date, period) {
   if (!token) return;
 
   const startDate = formatDateToPeriodStart(date, period);
-  const url = `${BASE_URL}/items/${endpoint}?range=${startDate}&date_value=${period}`;
+  const url = `${BASE_URL}/items/${endpoint}?range=${period}&date_value=${startDate}`;
 
   const response = await fetch(url, {
     headers: { Authorization: `Bearer ${token}` },
