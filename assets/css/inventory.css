@@ -200,3 +200,80 @@ tr:hover {
     padding: 10px 0;
   }
 }
+
+.spaced-div {
+  margin: 30px auto;
+  padding: 25px;
+  max-width: 900px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .spaced-div {
+    padding: 20px;
+    margin: 20px 15px;
+  }
+}
+
+.form-card {
+  max-width: 400px;
+  margin: 40px auto;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #fff;
+}
+
+.form-card h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.6em;
+}
+
+.form-card label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  margin-top: 16px;
+}
+
+.form-card input[type="number"],
+.form-card input[type="text"],
+.form-card input[type="date"] {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1em;
+  background-color: white;
+  color: cornsilk;
+  box-sizing: border-box;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-card input:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.form-card button {
+  width: 100%;
+  margin-top: 25px;
+  padding: 12px;
+  background-color: #00b894;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.form-card button:hover {
+  background-color: #019875;
+}

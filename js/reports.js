@@ -83,15 +83,6 @@ function getDateValue(period) {
     return `${yearVal}-01-01`;
   }
 }
-
-
-
-
-
-
-
-
-
 document.addEventListener("DOMContentLoaded", (event) => {
 
   const token = localStorage.getItem("token");
