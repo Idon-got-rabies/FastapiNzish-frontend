@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("Dashboard-dash-button").addEventListener("click", (event) => {
        window.location.href = "../dashboard.html";
     });
+    document.getElementById("reports-dash-button").addEventListener("click", (event) => {
+        window.location.href = "../dashboard.html";
+    })
 
     const form = document.getElementById("sale-form");
     form.addEventListener("submit", async (e) => {
