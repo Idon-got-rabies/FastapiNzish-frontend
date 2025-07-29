@@ -1,5 +1,5 @@
 
-const BASE_URL = `${window.API_BASE_URL || ''}/items/sale`;
+
 
 function adjustDateInput() {
   document.getElementById("dateInput").style.display = "none";
@@ -31,7 +31,7 @@ async function fetchAndDisplay() {
   const token = localStorage.getItem("token");
   if (!token) return;
 
-  const endpoint = `${BASE_URL}/${type}/${period}?date=${date}`;
+  const endpoint = `${BASE_URL}items/sale/stats/${type}/?range=${period}&date_value=${date}`;
 
   try {
     const res = await fetch(endpoint, {
@@ -45,13 +45,13 @@ async function fetchAndDisplay() {
     thead.innerHTML = "";
     tbody.innerHTML = "";
 
-    if (type === "total" && Array.isArray(data.items)) {
+    if (type === "allsales" && Array.isArray(data.items)) {
       thead.innerHTML = "<tr><th>Item ID</th><th>Item Name</th><th>Quantity Sold</th><th>Total Price</th></tr>";
-      data.items.forEach(({ item_id, item_name, total_quantity_sold, total_price }) => {
-        const row = `<tr><td>${item_id}</td><td>${item_name}</td><td>${total_quantity_sold}</td><td>${total_price}</td></tr>`;
+      data.items.forEach(({ item_inventory_id, item_name, total_quantity_sold, total_price }) => {
+        const row = `<tr><td>${item_inventory_id}</td><td>${item_name}</td><td>${total_quantity_sold}</td><td>${total_price}</td></tr>`;
         tbody.insertAdjacentHTML("beforeend", row);
       });
-    } else if (type === "nosales" && Array.isArray(data)) {
+    } else if (type === "none" && Array.isArray(data)) {
       thead.innerHTML = "<tr><th>Item ID</th><th>Item Name</th></tr>";
       data.forEach(({ item_id, item_name }) => {
         const row = `<tr><td>${item_id}</td><td>${item_name}</td></tr>`;
