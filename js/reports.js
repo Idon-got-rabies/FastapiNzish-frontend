@@ -1,90 +1,87 @@
-document.addEventListener("DOMContentLoaded", async () => {
 
+const BASE_URL = `${window.API_BASE_URL || ''}/items/sale`;
 
-  const salesForm = document.getElementById("sales-form");
-  const nosalesForm = document.getElementById("nosales-form");
+function adjustDateInput() {
+  document.getElementById("dateInput").style.display = "none";
+  document.getElementById("monthInput").style.display = "none";
+  document.getElementById("yearInput").style.display = "none";
 
-  function adjustDate(period, dateStr) {
-    const [year, month, day] = dateStr.split("-");
-    if (period === "month") return `${year}-${month}-01`;
-    if (period === "year") return `${year}-01-01`;
-    return dateStr;
-  }
+  const period = document.getElementById("period").value;
+  if (period === "day") document.getElementById("dateInput").style.display = "inline";
+  else if (period === "month") document.getElementById("monthInput").style.display = "inline";
+  else if (period === "year") document.getElementById("yearInput").style.display = "inline";
+}
 
-async function fetchAndDisplay(url, tableId) {
+function getDateValue(period) {
+  if (period === "day") return document.getElementById("dateInput").value;
+  if (period === "month") return document.getElementById("monthInput").value;
+  if (period === "year") return document.getElementById("yearInput").value;
+}
+
+document.getElementById("reportForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  await fetchAndDisplay();
+});
+
+async function fetchAndDisplay() {
+  const type = document.getElementById("reportType").value;
+  const period = document.getElementById("period").value;
+  const date = getDateValue(period);
+
   const token = localStorage.getItem("token");
-  const response = await fetch(`${url}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  if (!token) return;
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch data");
-  }
+  const endpoint = `${BASE_URL}/${type}/${period}?date=${date}`;
 
-  const data = await response.json();
-
-  // ✅ Check if response is wrapped in `items`
-  const items = Array.isArray(data) ? data : data.items;
-
-  if (!Array.isArray(items)) {
-    throw new Error("Invalid data format from API.");
-  }
-
-  const tableBody = document.querySelector(`#${tableId} tbody`);
-  tableBody.innerHTML = "";
-
-  if (items.length === 0) {
-    const row = document.createElement("tr");
-    const cell = document.createElement("td");
-    cell.colSpan = 5;
-    cell.textContent = "No results found.";
-    row.appendChild(cell);
-    tableBody.appendChild(row);
-    return;
-  }
-
-  for (const item of items) {
-    const row = document.createElement("tr");
-    Object.values(item).forEach(val => {
-      const cell = document.createElement("td");
-      cell.textContent = val;
-      row.appendChild(cell);
+  try {
+    const res = await fetch(endpoint, {
+      headers: { Authorization: `Bearer ${token}` },
     });
-    tableBody.appendChild(row);
+    const data = await res.json();
+
+    const table = document.getElementById("reportTable");
+    const thead = table.querySelector("thead");
+    const tbody = table.querySelector("tbody");
+    thead.innerHTML = "";
+    tbody.innerHTML = "";
+
+    if (type === "total" && Array.isArray(data.items)) {
+      thead.innerHTML = "<tr><th>Item ID</th><th>Item Name</th><th>Quantity Sold</th><th>Total Price</th></tr>";
+      data.items.forEach(({ item_id, item_name, total_quantity_sold, total_price }) => {
+        const row = `<tr><td>${item_id}</td><td>${item_name}</td><td>${total_quantity_sold}</td><td>${total_price}</td></tr>`;
+        tbody.insertAdjacentHTML("beforeend", row);
+      });
+    } else if (type === "nosales" && Array.isArray(data)) {
+      thead.innerHTML = "<tr><th>Item ID</th><th>Item Name</th></tr>";
+      data.forEach(({ item_id, item_name }) => {
+        const row = `<tr><td>${item_id}</td><td>${item_name}</td></tr>`;
+        tbody.insertAdjacentHTML("beforeend", row);
+      });
+    } else {
+      throw new Error("Invalid data format from API.");
+    }
+  } catch (err) {
+    console.error("Error:", err);
   }
 }
 
+function exportTableToCSV() {
+  const table = document.getElementById("reportTable");
+  const rows = table.querySelectorAll("tr");
+  const csv = Array.from(rows).map(row =>
+    Array.from(row.children).map(cell => `"${cell.innerText}"`).join(",")
+  ).join("\n");
 
-  salesForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    const period = document.getElementById("sales-period").value;
-    const rawDate = document.getElementById("sales-date").value;
-    if (!rawDate) return;
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "report.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
-    const date = adjustDate(period, rawDate);
-    const url = `${BASE_URL}/items/sale/?range=${period}&date_value=${date}`;
-    await fetchAndDisplay(url, "sales-table", "sales-section");
-  });
-
-  nosalesForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    const period = document.getElementById("nosales-period").value;
-    const rawDate = document.getElementById("nosales-date").value;
-    if (!rawDate) return;
-
-    const date = adjustDate(period, rawDate);
-    const url = `${BASE_URL}/items/sale/none/?range=${period}&date_value=${date}`;
-    await fetchAndDisplay(url, "nosales-table", "nosales-section");
-  });
-
-  // Optional logout
-  const logoutBtn = document.getElementById("logout-btn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("token");
-      window.location.href = "login.html";
-    });
-  }
-});
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+}
