@@ -14,8 +14,14 @@ function adjustDateInput() {
 
 function getDateValue(period) {
   if (period === "day") return document.getElementById("dateInput").value;
-  if (period === "month") return document.getElementById("monthInput").value;
-  if (period === "year") return document.getElementById("yearInput").value;
+  if (period === "month") {
+    const monthVal = document.getElementById("monthInput").value; // e.g. "2025-07"
+    return `${monthVal}-01`; // → "2025-07-01"
+  }
+  if (period === "year") {
+    const yearVal = document.getElementById("yearInput").value; // e.g. "2025"
+    return `${yearVal}-01-01`;
+  }
 }
 
 document.getElementById("reportForm").addEventListener("submit", async (e) => {
