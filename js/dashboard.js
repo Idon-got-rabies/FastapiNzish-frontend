@@ -150,7 +150,7 @@ async function showSales(period) {
     const today = new Date();
     const offset_date = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
     const now = offset_date.toISOString().split("T")[0]; // YYYY-MM-DD
-    const url = `${BASE_URL}/items/sale/?range=${period}&date_value=${now}`;
+    const url = `${BASE_URL}/items/sale/stats/allsales/?range=${period}&date_value=${now}`;
     const url2 = `${BASE_URL}/items/sale/stats/total/?range=${period}&date_value=${now}`;
 
     try {
