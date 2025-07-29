@@ -31,7 +31,7 @@ async function fetchAndDisplay() {
   const token = localStorage.getItem("token");
   if (!token) return;
 
-  const endpoint = `${BASE_URL}items/sale/stats/${type}/?range=${period}&date_value=${date}`;
+  const endpoint = `${BASE_URL}/items/sale/stats/${type}/?range=${period}&date_value=${date}`;
 
   try {
     const res = await fetch(endpoint, {
