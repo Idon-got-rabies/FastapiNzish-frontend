@@ -74,7 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!res.ok) throw new Error(data.detail || "Search failed");
 
             const results = document.getElementById("inventory-results");
-            results.innerHTML = `<p>${data.item_name} — Qty: ${data.item_quantity}</p>`;
+            results.innerHTML = `<p>${data.item_name} — Qty: ${data.item_quantity}/n
+                                                      — Price: ${data.item_price}</p>`;
 
         } catch (err) {
             alert(`Error: ${err.message}`);
