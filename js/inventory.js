@@ -1,21 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+  checkAuth(true);
   const token = localStorage.getItem("token");
-    const isAdmin = localStorage.getItem("is_admin") === "true";
-  if (!token) {
-    window.location.href = "../login.html";
-    return;
-  }
-  if (!isAdmin) {
-     window.location.href = "../login.html";
-        return;
-  }
 
   document.getElementById("fetch-no-sales").addEventListener("click", () => {
-  fetch(`${BASE_URL}/items/inventory/search/lowstock?filter_quantity=10`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
+  authCheck(`${BASE_URL}/items/inventory/search/lowstock?filter_quantity=10`)
   .then(res => {
     if (!res.ok) throw new Error("Failed to fetch no-sales items");
     return res.json();
@@ -41,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  const ITEMS_PER_PAGE = 20;
+  const ITEMS_PER_PAGE = 10;
   let currentPage = 1;
   let allItems = [];
 
@@ -49,13 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const paginationControls = document.getElementById("pagination-controls");
 
   function fetchInventory() {
-    fetch(`${BASE_URL}/items/inventory/`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+      authCheck(`${BASE_URL}/items/inventory/`)
       .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch inventory");
+        if (!res?.ok) throw new Error("Failed to fetch inventory");
         return res.json();
       })
       .then(data => {
@@ -76,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     items.forEach(item => {
       const row = document.createElement("tr");
-      if (item.item_quantity < 10) {
+      if (item.item_quantity < 0) {
         row.classList.add("low-stock");
       }
 
@@ -137,14 +121,12 @@ async function updateItemField(itemId, field, newValue) {
   console.log("Type of value:", typeof payload[field]); // Should show 'number'
 
   try {
-    const res = await fetch(endpoint, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-
+    const res = await authCheck(endpoint,{
+        method: "PUT",
+        headers: {
+            "content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
     });
 
     if (!res.ok) {
@@ -198,13 +180,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const paginationControls = document.getElementById("pagination-controls");
 
       function fetchInventory() {
-        fetch(`${BASE_URL}/items/inventory/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+          authCheck(`${BASE_URL}/items/inventory/`)
           .then(res => {
-            if (!res.ok) throw new Error("Failed to fetch inventory");
+            if (!res?.ok) throw new Error("Failed to fetch inventory");
             return res.json();
           })
           .then(data => {
@@ -309,13 +287,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const paginationControls = document.getElementById("pagination-controls");
 
       function fetchInventory() {
-        fetch(`${BASE_URL}/items/inventory/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+          authCheck(`${BASE_URL}/items/inventory/`)
           .then(res => {
-            if (!res.ok) throw new Error("Failed to fetch inventory");
+            if (!res?.ok) throw new Error("Failed to fetch inventory");
             return res.json();
           })
           .then(data => {
