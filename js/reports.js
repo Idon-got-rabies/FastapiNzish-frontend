@@ -51,6 +51,7 @@ async function fetchAndDisplay() {
         tbody.insertAdjacentHTML("beforeend", row);
       });
     } else if (type === "none" && Array.isArray(data)) {
+      totalSales.style.display = "none";
       thead.innerHTML = "<tr><th>Item ID</th><th>Item Name</th></tr>";
       data.forEach(({ item_id, item_name }) => {
         const row = `<tr><td>${item_id}</td><td>${item_name}</td></tr>`;
