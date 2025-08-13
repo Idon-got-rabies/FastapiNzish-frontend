@@ -1,20 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+    checkAuth(true)
     const isAdmin = localStorage.getItem("is_admin") === "true";
     const token = localStorage.getItem("token");
 
-    if (!token) {
-        window.location.href = "../login.html";
-        return;
-    }
 
-    if (isAdmin) {
-        document.getElementById("create-item-section").style.display = "block";
-        document.getElementById("view-item-sold-section").style.display = "block";
-        document.getElementById("inventory-dash-button").addEventListener("click", (event) => {
-            window.location.href = "../inventory.html";
-        })
 
-    }
+
+
+    document.getElementById("create-item-section").style.display = "block";
+    document.getElementById("view-item-sold-section").style.display = "block";
+    document.getElementById("inventory-dash-button").addEventListener("click", (event) => {
+        window.location.href = "../inventory.html";
+    })
+
+
 
 
     document.getElementById("logout-btn").addEventListener("click", () => {
@@ -35,18 +35,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const quantity = document.getElementById("sale-quantity").value;
 
         try {
-            const res = await fetch(`${BASE_URL}/items/sale/`, {
+            const res = await authCheck(`${BASE_URL}/items/sale/`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
+                    "content-Type": "application/json"
                 },
                 body: JSON.stringify({ item_id: itemId, item_quantity: Number(quantity) })
             });
-
             const data = await res.json();
 
-            if (!res.ok) throw new Error(data.detail || "Sale failed");
+            if (!res?.ok) throw new Error(data.detail || "Sale failed");
 
             alert("Sale successful!");
         } catch (err) {
@@ -62,16 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const url = `${BASE_URL}/items/inventory/search?query=${encodeURIComponent(query)}`;
 
         try {
-            const res = await fetch(url, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
+            const res = await authCheck(url)
             const data = await res.json();
             console.log("Search result:", data);
 
-            if (!res.ok) throw new Error(data.detail || "Search failed");
+            if (!res?.ok) throw new Error(data.detail || "Search failed");
 
             const results = document.getElementById("inventory-results");
             results.innerHTML = `<p>${data.item_name} — Qty: ${data.item_quantity} Price: ${data.item_price}</p>`;
@@ -91,11 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const price = document.getElementById("new-price").value;
 
             try {
-                const res = await fetch(`${BASE_URL}/items/inventory/`, {
+                const res = await authCheck(`${BASE_URL}/items/inventory/`, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
+                        "content-Type": "application/json"
                     },
                     body: JSON.stringify({
                         item_name: String(name),
@@ -105,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || "Create failed");
+                if (!res?.ok) throw new Error(data.detail || "Create failed");
 
                 alert(`Item created! Item id: ${data.item_id}`);
             } catch (err) {
@@ -116,14 +108,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById("view-sales-btn").addEventListener("click", async () => {
             try {
-                const res = await fetch(`${BASE_URL}/items/sale/`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                const res = await authCheck(`${BASE_URL}/items/sale/`)
                 const data = await res.json();
 
-                if (!res.ok) throw new Error(data.detail || "Could not fetch sales");
+                if (!res?.ok) throw new Error(data.detail || "Could not fetch sales");
 
                 const sales = data.items;
 
@@ -157,17 +145,8 @@ async function showSales(period) {
     const url2 = `${BASE_URL}/items/sale/stats/total/?range=${period}&date_value=${now}`;
 
     try {
-        const res = await fetch(url, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        const result = await fetch(url2,{
-            headers:{
-                Authorization: `Bearer ${token}`
-            }
-        });
-
+        const res = await authCheck(url)
+        const result = await authCheck(url2)
         const totalSales = await result.json();
         if (!result.ok) throw new Error(totalSales.detail || "Failed to load total sales");
 
