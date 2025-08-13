@@ -60,21 +60,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const items = allItems.slice(start, end);
     let totalres = {};
 
-    const total = authCheck(`${BASE_URL}/items/inventory/total/stock/`)
+    authCheck(`${BASE_URL}/items/inventory/total/stock/`)
     .then(res => {
         if (!res?.ok) throw new Error("Failed to fetch inventory");
         return res.json();
     })
     .then(data => {
-        totalres = data;
+        const total = document.getElementById("inventory-table-result-box");
+        total.innerHTML = `<p>Total stock: ${data.total_stock}  Net worth: ${data.net_worth}</p>`;
     })
     .catch(error => {
         console.error("Error loading inventory:", error);
     });
     console.log(totalres)
 
-    const totalStockand = document.getElementById('inventory-table-result-box');
-    totalStockand.innerHTML = `<p>Total stock: ${totalres.total_stock}   Net worth: ${totalres.net_worth}</p>`;
 
 
     items.forEach(item => {
