@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   document.getElementById("fetch-no-sales").addEventListener("click", () => {
-  authCheck(`${BASE_URL}/items/inventory/search/lowstock?filter_quantity=10`)
+  authCheck(`${BASE_URL}/items/inventory/search/lowstock?filter_quantity=0`)
   .then(res => {
     if (!res?.ok) throw new Error("Failed to fetch no-sales items");
     return res.json();
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     items.forEach(item => {
       const row = document.createElement("tr");
-      if (item.item_quantity < 0) {
+      if (item.item_quantity < 1) {
         row.classList.add("low-stock");
       }
 
@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       updateQuantityForm.reset();
 
 
-      const ITEMS_PER_PAGE = 20;
+      const ITEMS_PER_PAGE = 10;
       const token = localStorage.getItem("token");
       let currentPage = 1;
       let allItems = [];
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         items.forEach(item => {
           const row = document.createElement("tr");
-          if (item.item_quantity < 10) {
+          if (item.item_quantity < 1) {
             row.classList.add("low-stock");
           }
 
@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateForm.reset();
 
-      const ITEMS_PER_PAGE = 20;
+      const ITEMS_PER_PAGE = 10;
       const token = localStorage.getItem("token");
       let currentPage = 1;
       let allItems = [];
@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         items.forEach(item => {
           const row = document.createElement("tr");
-          if (item.item_quantity < 10) {
+          if (item.item_quantity < 1) {
             row.classList.add("low-stock");
           }
 
