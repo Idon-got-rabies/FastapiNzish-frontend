@@ -54,7 +54,7 @@ async function authCheck(url, options = {}){
     const res = await fetch(url, {...options, headers});
     if (res.status === 401){
         logout();
-        return;
+        throw new Error("Unauthorized");
     }
     return res;
 }
