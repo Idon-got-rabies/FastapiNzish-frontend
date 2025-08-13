@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .catch(error => {
         console.error("Error loading inventory:", error);
-      });
+      })
   }
 
   function renderPage(page) {
@@ -58,6 +58,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const start = (page - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
     const items = allItems.slice(start, end);
+    let totalres = [];
+
+    const total = authCheck(`${BASE_URL}/items/inventory/total/stock/`)
+    .then(res => {
+        if (!res?.ok) throw new Error("Failed to fetch inventory");
+        return res.json();
+    });
+    const totalStockand = document.getElementById('inventory-table-result-box');
+    totalStockand.innerHTML = `<p>Total stock: ${total.total_stock}   Net worth: ${total.net_worth}</p>`;
+
 
     items.forEach(item => {
       const row = document.createElement("tr");
