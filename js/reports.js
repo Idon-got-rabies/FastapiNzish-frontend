@@ -30,9 +30,7 @@ async function fetchAndDisplay() {
   const endpoint = `${BASE_URL}/items/sale/stats/${type}/?range=${period}&date_value=${date}`;
 
   try {
-    const res = await fetch(endpoint, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await authCheck(endpoint);
     const data = await res.json();
 
     const table = document.getElementById("reportTable");
@@ -84,17 +82,8 @@ function getDateValue(period) {
   }
 }
 document.addEventListener("DOMContentLoaded", (event) => {
+  checkAuth(true)
 
-  const token = localStorage.getItem("token");
-  const is_admin = localStorage.getItem("is_admin") === "true";
-  if (!token) {
-    window.location.href = "/login.html";
-    return;
-  }
-  if (!is_admin) {
-    window.location.href = "/login.html";
-    return;
-  }
   document.getElementById("reportForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     await fetchAndDisplay();

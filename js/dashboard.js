@@ -1,21 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    checkAuth(true)
+    checkAuth(false)
     const isAdmin = localStorage.getItem("is_admin") === "true";
     const token = localStorage.getItem("token");
 
 
 
 
+    if (isAdmin) {
+        document.getElementById("create-item-section").style.display = "block";
+        document.getElementById("view-item-sold-section").style.display = "block";
+        document.getElementById("inventory-dash-button").addEventListener("click", (event) => {
+            window.location.href = "../inventory.html";
+        })
 
-    document.getElementById("create-item-section").style.display = "block";
-    document.getElementById("view-item-sold-section").style.display = "block";
-    document.getElementById("inventory-dash-button").addEventListener("click", (event) => {
-        window.location.href = "../inventory.html";
-    })
-
-
-
+    }
 
     document.getElementById("logout-btn").addEventListener("click", () => {
         localStorage.clear();
