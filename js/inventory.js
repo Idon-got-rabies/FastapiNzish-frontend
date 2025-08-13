@@ -67,7 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then(data => {
         const total = document.getElementById("inventory-table-result-box");
-        total.innerHTML = `<p>Total stock: ${data.total_stock}  Net worth: ${data.net_worth}</p>`;
+        total.innerHTML = `<p>Total stock: ${data.total_stock} items 
+                                    Net worth: ${data.net_worth}</p>`;
     })
     .catch(error => {
         console.error("Error loading inventory:", error);
