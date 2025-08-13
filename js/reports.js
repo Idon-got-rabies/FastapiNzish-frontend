@@ -28,18 +28,23 @@ async function fetchAndDisplay() {
   if (!token) return;
 
   const endpoint = `${BASE_URL}/items/sale/stats/${type}/?range=${period}&date_value=${date}`;
+  const endpoint2 = `${BASE_URL}/items/sale/stats/total/?range=${period}&date_value=${date}`;
 
   try {
     const res = await authCheck(endpoint);
     const data = await res.json();
+    const result = await authCheck(endpoint2);
+    const data2 = await result.json();
 
     const table = document.getElementById("reportTable");
+    const totalSales = document.getElementById("reportResults");
     const thead = table.querySelector("thead");
     const tbody = table.querySelector("tbody");
     thead.innerHTML = "";
     tbody.innerHTML = "";
 
     if (type === "allsales" && Array.isArray(data.items)) {
+      totalSales.innerHTML = `<p>Gross sales: ${data2.total_sales}</p>`;
       thead.innerHTML = "<tr><th>Item ID</th><th>Item Name</th><th>Quantity Sold</th><th>Total Price</th></tr>";
       data.items.forEach(({ item_inventory_id, item_name, total_quantity_sold, total_price }) => {
         const row = `<tr><td>${item_inventory_id}</td><td>${item_name}</td><td>${total_quantity_sold}</td><td>${total_price}</td></tr>`;

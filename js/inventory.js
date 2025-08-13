@@ -219,6 +219,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
         const end = start + ITEMS_PER_PAGE;
         const items = allItems.slice(start, end);
 
+        authCheck(`${BASE_URL}/items/inventory/total/stock/`)
+        .then(res => {
+            if (!res?.ok) throw new Error("Failed to fetch inventory");
+            return res.json();
+        })
+        .then(data => {
+            const total = document.getElementById("inventory-table-result-box");
+            total.innerHTML = `<p>Total stock: ${data.total_stock} items <br> Net worth: ${data.net_worth.toLocaleString()} KSH</p>`;
+        })
+        .catch(error => {
+            console.error("Error loading inventory:", error);
+        });
+        console.log(totalres)
+
         items.forEach(item => {
           const row = document.createElement("tr");
           if (item.item_quantity < 1) {
@@ -325,6 +339,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const start = (page - 1) * ITEMS_PER_PAGE;
         const end = start + ITEMS_PER_PAGE;
         const items = allItems.slice(start, end);
+
+        authCheck(`${BASE_URL}/items/inventory/total/stock/`)
+        .then(res => {
+            if (!res?.ok) throw new Error("Failed to fetch inventory");
+            return res.json();
+        })
+        .then(data => {
+            const total = document.getElementById("inventory-table-result-box");
+            total.innerHTML = `<p>Total stock: ${data.total_stock} items <br> Net worth: ${data.net_worth.toLocaleString()} KSH</p>`;
+        })
+        .catch(error => {
+            console.error("Error loading inventory:", error);
+        });
+             
 
         items.forEach(item => {
           const row = document.createElement("tr");
