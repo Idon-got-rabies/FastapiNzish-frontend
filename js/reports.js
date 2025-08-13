@@ -44,6 +44,7 @@ async function fetchAndDisplay() {
     tbody.innerHTML = "";
 
     if (type === "allsales" && Array.isArray(data.items)) {
+      totalSales.style.display = "";
       totalSales.innerHTML = `<p>Gross sales: ${data2.total_sales}</p>`;
       thead.innerHTML = "<tr><th>Item ID</th><th>Item Name</th><th>Quantity Sold</th><th>Total Price</th></tr>";
       data.items.forEach(({ item_inventory_id, item_name, total_quantity_sold, total_price }) => {
