@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-  checkAuth(true);
   const token = localStorage.getItem("token");
+  checkAuth(true);
+
 
   document.getElementById("fetch-no-sales").addEventListener("click", () => {
   authCheck(`${BASE_URL}/items/inventory/search/lowstock?filter_quantity=10`)
   .then(res => {
-    if (!res.ok) throw new Error("Failed to fetch no-sales items");
+    if (!res?.ok) throw new Error("Failed to fetch no-sales items");
     return res.json();
   })
   .then(data => {
@@ -129,7 +130,7 @@ async function updateItemField(itemId, field, newValue) {
         body: JSON.stringify(payload)
     });
 
-    if (!res.ok) {
+    if (!res?.ok) {
       const errorData = await res.json();
       throw new Error(errorData.detail || "Update failed");
     }
