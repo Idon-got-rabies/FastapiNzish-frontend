@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }else{
                     results.innerHTML = data.map(item =>
                      `<p>${item.item_name} — Qty: ${item.item_quantity} Price: ${item.item_price} Item id: ${item.item_id}</p>`
-                    ).join();
+                    ).join("");
                 }
 
 
