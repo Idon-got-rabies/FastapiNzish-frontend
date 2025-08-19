@@ -74,13 +74,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     results.innerHtml = "<p>No items found</p>"
                 }else{
                     results.innerHTML = data.map(item =>
-                     `<p>${item.item_name} — Qty: ${item.item_quantity} Price: ${item.item_price}</p>`
+                     `<p>${item.item_name} — Qty: ${item.item_quantity} Price: ${item.item_price} Item id: ${data.item_id}</p>`
                     ).join();
                 }
 
 
             }else {
-                results.innerHTML =  `<p>${data.item_name} — Qty: ${data.item_quantity} Price: ${data.item_price}</p>`;
+                results.innerHTML =  `<p>${data.item_name} — Qty: ${data.item_quantity} Price: ${data.item_price} Item id: ${data.item_id}</p>`;
 
             }
 
