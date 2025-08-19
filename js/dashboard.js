@@ -66,7 +66,27 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!res?.ok) throw new Error(data.detail || "Search failed");
 
             const results = document.getElementById("inventory-results");
-            results.innerHTML = `<p>${data.item_name} — Qty: ${data.item_quantity} Price: ${data.item_price}</p>`;
+
+
+
+            if (Array.isArray(data)){
+                if (data.length === 0){
+                    results.innerHtml = "<p>No items found</p>"
+                }else{
+                    results.innerHTML = data.map(item =>
+                     `<p>${item.item_name} — Qty: ${item.item_quantity} Price: ${item.item_price}</p>`
+                    ).join();
+                }
+
+
+            }else {
+                results.innerHTML =  `<p>${data.item_name} — Qty: ${data.item_quantity} Price: ${data.item_price}</p>`;
+
+            }
+
+
+
+
 
         } catch (err) {
             alert(`Error: ${err.message}`);
