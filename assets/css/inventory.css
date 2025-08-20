@@ -250,8 +250,8 @@ tr:hover {
   border-radius: 8px;
   border: none;
   font-size: 1em;
-  background-color: black;
-  color: white;
+  background-color: white;
+  color: black;
   box-sizing: border-box;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
