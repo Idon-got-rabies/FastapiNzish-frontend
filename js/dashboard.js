@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const quantity = document.getElementById("sale-quantity").value;
 
         try {
-            showLoader("loader-view-sales")
+            showLoader(`loader-view-sales`)
             const res = await authCheck(`${BASE_URL}/items/sale/`, {
                 method: "POST",
                 headers: {
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
             alert(`Error: ${err.message}`);
         }finally {
-            hideLoader("loader-view-sales");
+            hideLoader(`loader-view-sales`);
         }
         form.reset();
     });
