@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
             : `${BASE_URL}/login/`;
 
         try {
+
+            showLoader();
             const res = await fetch(endpoint, {
                 method: "POST",
                 headers: {
@@ -37,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "../dashboard.html";
         } catch (err) {
             document.getElementById("error-message").textContent = err.message;
+        }finally {
+            hideLoader();
         }
     });
 
