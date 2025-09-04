@@ -20,10 +20,6 @@
             <button id="logout-btn">Logout</button>
         </header>
         <main>
-            <div id="loader" class="loader-overlay">
-                <div class="spinner"></div>
-                <h3>Loading.....Please wait</h3>
-            </div>
             <button id="Dashboard-dash-button">Dashboard</button>
             <button id="inventory-dash-button">Inventory</button>
             <button id="reports-dash-button">Reports</button>
@@ -43,6 +39,12 @@
                     <input type="number" id="sale-quantity" placeholder="Quantity" required>
                     <button type="submit">Submit Sale</button>
                 </form>
+                <div class="loader-container">
+                    <div id="loader-sale-form" class="loader-overlay">
+                        <div class="spinner"></div>
+                    </div>
+
+                </div>
             </section>
 
             <section id="create-item-section" style="display: none;">
@@ -58,6 +60,12 @@
 
             <section id="view-item-sold-section" style="display: none;">
                 <h2>View Sales</h2>
+                <div class="loader-container">
+                    <div id="loader-view-sales" class="loader-overlay">
+                        <div class="spinner"></div>
+                        Loading....Please wait
+                    </div>
+                </div>
                 <div class="sales-filters">
                     <button onclick="showSales('day');">Today</button>
                     <button onclick="showSales('week')">This Week</button>

@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const quantity = document.getElementById("sale-quantity").value;
 
         try {
-            showLoader();
+            showLoader("loader-view-sales")
             const res = await authCheck(`${BASE_URL}/items/sale/`, {
                 method: "POST",
                 headers: {
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
             alert(`Error: ${err.message}`);
         }finally {
-            hideLoader();
+            hideLoader("loader-view-sales");
         }
         form.reset();
     });
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById("view-sales-btn").addEventListener("click", async () => {
             try {
-                showLoader();
+
                 const res = await authCheck(`${BASE_URL}/items/sale/`)
                 const data = await res.json();
 
@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch (err) {
                 alert(`Error: ${err.message}`);
             }finally {
-                hideLoader();
+
             }
         });
     }

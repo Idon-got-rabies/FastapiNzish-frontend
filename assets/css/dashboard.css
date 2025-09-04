@@ -174,25 +174,30 @@ button:hover {
     max-width: 400px;
 }
 
+.loader-container {
+  position: relative; /* important: positions the loader relative to this container */
+  min-height: 200px; /* just so you can see space */
+}
+
 .loader-overlay {
   display: none; /* hidden by default */
-  position: fixed;
+  position: absolute; /* restricts overlay to parent container */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 10;
 }
 
 .spinner {
   border: 6px solid #f3f3f3;
   border-top: 6px solid #00b894;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   animation: spin 1s linear infinite;
 }
 

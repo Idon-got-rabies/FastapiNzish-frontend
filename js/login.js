@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            showLoader();
+            showLoaderLogin();
             const res = await fetch(endpoint, {
                 method: "POST",
                 headers: {
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
             document.getElementById("error-message").textContent = err.message;
         }finally {
-            hideLoader();
+            hideLoaderLogin();
         }
     });
 
