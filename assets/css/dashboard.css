@@ -176,7 +176,7 @@ button:hover {
 
 .loader-container {
   position: relative; /* important: positions the loader relative to this container */
-  min-height: 200px; /* just so you can see space */
+  min-height: 20px; /* just so you can see space */
 }
 
 .loader-overlay {
