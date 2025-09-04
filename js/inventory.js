@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tbody.appendChild(row);
     });
     document.getElementById("nosales-section").style.display = "block";
+    hideLoader();
   })
   .catch(err => console.error(err));
   hideLoader();
