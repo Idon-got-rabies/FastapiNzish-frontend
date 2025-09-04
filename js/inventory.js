@@ -4,9 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   document.getElementById("fetch-no-sales").addEventListener("click", () => {
-      showLoader();
   authCheck(`${BASE_URL}/items/inventory/search/lowstock?filter_quantity=0`)
   .then(res => {
+      showLoader();
     if (!res?.ok) throw new Error("Failed to fetch no-sales items");
     return res.json();
   })
