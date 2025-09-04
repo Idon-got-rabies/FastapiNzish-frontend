@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   document.getElementById("fetch-no-sales").addEventListener("click", () => {
+      showLoader();
   authCheck(`${BASE_URL}/items/inventory/search/lowstock?filter_quantity=0`)
   .then(res => {
     if (!res?.ok) throw new Error("Failed to fetch no-sales items");
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("nosales-section").style.display = "block";
   })
   .catch(err => console.error(err));
+  hideLoader();
 
   });
 
