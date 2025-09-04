@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const quantity = document.getElementById("sale-quantity").value;
 
         try {
+            showLoader();
             const res = await authCheck(`${BASE_URL}/items/sale/`, {
                 method: "POST",
                 headers: {
@@ -48,8 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Sale successful!");
         } catch (err) {
             alert(`Error: ${err.message}`);
+        }finally {
+            hideLoader();
         }
-
         form.reset();
     });
 
@@ -59,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const url = `${BASE_URL}/items/inventory/search?query=${encodeURIComponent(query)}`;
 
         try {
+            showLoader();
             const res = await authCheck(url)
             const data = await res.json();
             console.log("Search result:", data);
@@ -89,6 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (err) {
             alert(`Error: ${err.message}`);
+        }finally {
+            hideLoader();
         }
 
     });
@@ -102,6 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const price = document.getElementById("new-price").value;
 
             try {
+                showLoader();
                 const res = await authCheck(`${BASE_URL}/items/inventory/`, {
                     method: "POST",
                     headers: {
@@ -120,12 +126,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert(`Item created! Item id: ${data.item_id}`);
             } catch (err) {
                 alert(`Error: ${err.message}`);
+            }finally {
+                hideLoader();
             }
             form.reset();
         });
 
         document.getElementById("view-sales-btn").addEventListener("click", async () => {
             try {
+                showLoader();
                 const res = await authCheck(`${BASE_URL}/items/sale/`)
                 const data = await res.json();
 
@@ -147,6 +156,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("sales-data").innerHTML = output;
             } catch (err) {
                 alert(`Error: ${err.message}`);
+            }finally {
+                hideLoader();
             }
         });
     }
@@ -163,6 +174,7 @@ async function showSales(period) {
     const url2 = `${BASE_URL}/items/sale/stats/total/?range=${period}&date_value=${now}`;
 
     try {
+        showLoader();
         const res = await authCheck(url)
         const result = await authCheck(url2)
         const totalSales = await result.json();
@@ -194,6 +206,8 @@ async function showSales(period) {
 
     } catch (err) {
         alert(`Error: ${err.message}`);
+    }finally {
+        hideLoader();
     }
 }
 
